@@ -42,5 +42,14 @@ public class LibraryManagementSystemService {
         book.setId(id);
         return LMSRepository.save(book);
     }
+	
+	
+	public boolean deleteBook(Long id) {
+        if (LMSRepository.existsById(id)) {
+            LMSRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 
 }
