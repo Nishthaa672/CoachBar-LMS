@@ -51,11 +51,13 @@ The Application will start at http://localhost:8080
 ...
 
 ##API Documentation
+
 Swagger UI is available at http://localhost:8080/swagger-ui/index.html
 
 ...
 
 ##Testing the Application
+
 -Add the Authorization Header: Basic Auth with valid username and password.
 -Example credentials(configured in application.properties): 
     username:user
@@ -64,6 +66,7 @@ Swagger UI is available at http://localhost:8080/swagger-ui/index.html
 ...
 
 ##Sample API EndPoints
+
 -Get All Books: /api/lms/books
 -Get a Book by ID: /api/lms/books/{id}
 -Add a New Book: /api/lms/book
@@ -73,12 +76,15 @@ Swagger UI is available at http://localhost:8080/swagger-ui/index.html
 ...
 
 ##Running Tests
+
 mvn test
 
 ...
 
 ##TroubleShooting
+
 Common Issues
+
 -Database Connection Error: Verify that database credentials in properties file are correct. Also, Ensure the PostgreSQL server is running.
 -Swagger Not Loading: Check for any errors in console and also ensure that the springdoc-openapi dependencies are correctly added.
 -401 Unauthorized: ENsure you are sending the correct Basic Auth header with the request.
