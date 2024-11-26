@@ -16,6 +16,14 @@ import jakarta.validation.constraints.Positive;
 @Entity
 public class Book {
 	
+	public Book( String title,
+			String author,
+			int publicationYear) {
+		super();
+		this.title = title;
+		this.author = author;
+		this.publicationYear = publicationYear;
+	}
 	public Book() {
 		super();
 	}
