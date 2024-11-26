@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,9 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import com.CoachBar.Library_Management_System.Model.Book;
-import com.CoachBar.Library_Management_System.Repository.LibraryManagementSystemRepository;
-import com.CoachBar.Library_Management_System.Service.LibraryManagementSystemService;
 
+import com.CoachBar.Library_Management_System.Service.LibraryManagementSystemService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -31,16 +31,22 @@ import org.springframework.security.test.context.support.WithMockUser;
 @AutoConfigureMockMvc
 class LibraryManagementSystemApplicationTests {
 
-	@Autowired
+	
     private MockMvc mockMvc;
 
-    @SuppressWarnings("removal")
+    private ObjectMapper objectMapper;
+    
+    
+    public LibraryManagementSystemApplicationTests(MockMvc mockMvc, ObjectMapper objectMapper) {
+		super();
+		this.mockMvc = mockMvc;
+		this.objectMapper = objectMapper;
+	}
+
+
+	@SuppressWarnings("removal")
 	@MockBean
     private LibraryManagementSystemService LMSService;
-    
-    @SuppressWarnings("removal")
-	@MockBean
-    private LibraryManagementSystemRepository LMSRepository;
     
    
     
@@ -65,7 +71,7 @@ class LibraryManagementSystemApplicationTests {
     
     @Test
     @WithMockUser(username = "user", password = "password", roles = {"USER"})
-    public void testGetEmployeeByIdSuccess() throws Exception {
+    public void testGetBookByIdSuccess() throws Exception {
     	Book book = new Book(1L, "Book One", "Author One", 2020);
     	
     	Mockito.when(LMSService.getBookById(1L)).thenReturn(Optional.of(book));
@@ -108,6 +114,30 @@ class LibraryManagementSystemApplicationTests {
                 .andExpect(status().isCreated()) 
                 .andExpect(jsonPath("$.title").value("New Book"))
                 .andExpect(jsonPath("$.author").value("New Author"));
+    }
+    
+
+    @Test
+    @WithMockUser(username = "user", password = "password", roles = {"USER"})
+    public void testCreateBook_InvalidInput_ShouldReturnValidationErrors() throws Exception {
+        
+        Book invalidBook = new Book();
+        invalidBook.setId(10); 
+        invalidBook.setTitle("");
+        invalidBook.setAuthor("");
+        invalidBook.setPublicationYear(-2020);
+
+        
+        String invalidBookJson = objectMapper.writeValueAsString(invalidBook);
+
+        
+        mockMvc.perform(post("/api/lms/book")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(invalidBookJson))
+                
+                .andExpect(status().isBadRequest())
+              
+                .andExpect(jsonPath("$.message").value("Author is mandatory. Title is mandatory. Publication year must be positive number."));
     }
     
     @Test
