@@ -7,6 +7,7 @@ import org.apache.catalina.filters.AddDefaultCharsetFilter.ResponseWrapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +21,11 @@ import com.CoachBar.Library_Management_System.Model.Book;
 import com.CoachBar.Library_Management_System.Service.LibraryManagementSystemService;
 import com.CoachBar.Library_Management_System.exception.ResourceNotFoundException;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/lms")
+@Validated
 public class LibraryManagementSystemController {
 	
 	private LibraryManagementSystemService LMSService;
@@ -45,16 +49,17 @@ public class LibraryManagementSystemController {
     }
 
 	@PostMapping("/book")
-    public Book createBook(@RequestBody Book book) {
-		
-		
-        return LMSService.createBook(book);
+	public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) {
+        Book savedBook = LMSService.createBook(book);
+        return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
     }
 	
 	@PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
-        return LMSService.updateBook(id, bookDetails)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+	public ResponseEntity<Book> updateBook(@PathVariable Long id, @Valid @RequestBody Book bookRequest) {
+        Book updatedBook = LMSService.updateBook(id, bookRequest);
+        if (updatedBook == null) {
+            throw new ResourceNotFoundException("Book with ID " + id + " not found");
+        }
+        return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
 }

@@ -17,11 +17,22 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
 
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        StringBuilder errorMessages = new StringBuilder();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            errorMessages.append(error.getDefaultMessage()).append(". ");
+        });
 
+        ErrorResponse errorResponse = new ErrorResponse(errorMessages.toString().trim(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
     // Handle resource not found (custom exception)
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        
+        
     }
 }

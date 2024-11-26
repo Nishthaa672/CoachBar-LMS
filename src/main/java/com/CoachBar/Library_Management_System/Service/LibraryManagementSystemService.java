@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.CoachBar.Library_Management_System.Model.Book;
 import com.CoachBar.Library_Management_System.Repository.LibraryManagementSystemRepository;
 
+import jakarta.validation.Valid;
+
 @Service
 public class LibraryManagementSystemService {
 	
@@ -33,13 +35,12 @@ public class LibraryManagementSystemService {
         return LMSRepository.save(book);
     }
 	
-	public Optional<Book> updateBook(Long id, Book bookDetails) {
-        return LMSRepository.findById(id).map(book -> {
-            book.setTitle(bookDetails.getTitle());
-            book.setAuthor(bookDetails.getAuthor());
-            book.setPublicationYear(bookDetails.getPublicationYear());
-            return LMSRepository.save(book);
-        });
+	public Book updateBook(Long id, @Valid Book book) {
+        if (!LMSRepository.existsById(id)) {
+            return null; 
+        }
+        book.setId(id);
+        return LMSRepository.save(book);
     }
 
 }
