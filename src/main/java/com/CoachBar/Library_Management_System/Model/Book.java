@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 
 
 @Entity
@@ -25,7 +26,7 @@ public class Book {
 	@NotBlank(message="Author is mandatory")
 	private String author;
 	
-	@NotBlank(message="Publication Year is mandatory")
+	@Positive(message="Publication year must be positive number")
 	@Column(name="publication_year")
 	private int publicationYear;
 
