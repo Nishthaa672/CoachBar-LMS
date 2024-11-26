@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 
 
@@ -45,6 +46,7 @@ public class Book {
 	private String title;
 	
 	@NotBlank(message="Author is mandatory")
+	@Size(max=100,message="Author Name cannot exceed 100 characters")
 	private String author;
 	
 	@Positive(message="Publication year must be positive number")

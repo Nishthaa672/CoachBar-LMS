@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +13,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 
 import com.CoachBar.Library_Management_System.Model.Book;
 import com.CoachBar.Library_Management_System.Repository.LibraryManagementSystemRepository;
 import com.CoachBar.Library_Management_System.Service.LibraryManagementSystemService;
-import  org.springframework.test.web.servlet.MockMvc;
+
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,11 +42,7 @@ class LibraryManagementSystemApplicationTests {
 	@MockBean
     private LibraryManagementSystemRepository LMSRepository;
     
-   /* @BeforeEach
-    public void setup()
-    {
-    	mockMvc=mockMvc.perform(get("/api/lms/books").with(httpBasic("user","password")));
-    }*/
+   
     
     @Test
     @WithMockUser(username="user",password="password",roles= {"USER"})
@@ -117,11 +113,9 @@ class LibraryManagementSystemApplicationTests {
     @Test
     @WithMockUser(username = "user", password = "password", roles = {"USER"})
     public void testUpdateBook() throws Exception {
-    	Book existingBook = new Book(3, "Book One", "Author One", 2020);
+    	
         Book updatedBook = new Book(3,"Updated Book", "Updated Author", 2021);
         
-        //Mockito.when(LMSRepository.findById(1L)).thenReturn(Optional.of(existingBook));
-        //Mockito.when(LMSRepository.existsById(1L)).thenReturn(true);
         
         Mockito.when(LMSService.updateBook(eq(3L),Mockito.any(Book.class))).thenReturn(updatedBook);
         
@@ -132,6 +126,46 @@ class LibraryManagementSystemApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Updated Book"))
                 .andExpect(jsonPath("$.author").value("Updated Author"));
+    }
+    
+    @Test
+    @WithMockUser(username = "user", password = "password", roles = {"USER"})
+    public void testUpdateBookNotFound() throws Exception {
+        
+        Book updatedBook = new Book(1L, "Updated Book", "Updated Author", 2021);
+        Mockito.when(LMSService.updateBook(1L, updatedBook)).thenReturn(null);
+
+        
+        mockMvc.perform(put("/api/lms/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"title\": \"Updated Book\", \"author\": \"Updated Author\", \"publicationYear\": 2021}"))
+                .andExpect(status().isNotFound()) 
+                .andExpect(jsonPath("$.message").value("Book with ID 1 not found"));
+    }
+    
+    
+    @Test
+    @WithMockUser(username = "user", password = "password", roles = {"USER"})
+    public void testDeleteBook() throws Exception {
+        
+        Mockito.when(LMSService.deleteBook(1L)).thenReturn(true);
+
+        mockMvc.perform(delete("/api/lms/remove/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Object deleted successfully"));
+    }
+
+    
+    @Test
+    @WithMockUser(username = "user", password = "password", roles = {"USER"})
+    public void testDeleteBookNotFound() throws Exception {
+        
+        Mockito.when(LMSService.deleteBook(1L)).thenReturn(false);
+
+        
+        mockMvc.perform(delete("/api/lms/remove/{id}", 1L))
+                .andExpect(status().isNotFound()) 
+                .andExpect(jsonPath("$.message").value("Book with ID 1 not found"));
     }
 
 }

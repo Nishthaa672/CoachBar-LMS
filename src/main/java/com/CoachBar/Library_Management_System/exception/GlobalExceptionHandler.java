@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.CoachBar.Library_Management_System.dto.ErrorResponse;
 
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingPathVariableException;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
