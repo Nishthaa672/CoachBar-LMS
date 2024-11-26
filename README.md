@@ -6,9 +6,13 @@ This project is a Spring Boot Application for managing a library system. It prov
 
 ##Features
 -**CRUD Operations**- Add, View, Update and Delete books.
+
 -**Validation**- Request payload validation using JSR 380 annotations.
+
 -**Global Exception Handling**- Handles errors and returns meaningful error messages.
+
 -**Swagger Integration**- API Documentation and Testing.
+
 -**Spring Security**- Basic Authentication for endpoints.
 
 ...
@@ -59,6 +63,7 @@ Swagger UI is available at http://localhost:8080/swagger-ui/index.html
 ##Testing the Application
 
 -Add the Authorization Header: Basic Auth with valid username and password.
+
 -Example credentials(configured in application.properties): 
     username:user
     password:password
@@ -68,9 +73,13 @@ Swagger UI is available at http://localhost:8080/swagger-ui/index.html
 ##Sample API EndPoints
 
 -Get All Books: /api/lms/books
+
 -Get a Book by ID: /api/lms/books/{id}
+
 -Add a New Book: /api/lms/book
+
 -Update a Book: /api/lms/{id}
+
 -Delete a Book: /api/lms/remove/{id}
 
 ...
@@ -86,5 +95,7 @@ mvn test
 Common Issues
 
 -Database Connection Error: Verify that database credentials in properties file are correct. Also, Ensure the PostgreSQL server is running.
+
 -Swagger Not Loading: Check for any errors in console and also ensure that the springdoc-openapi dependencies are correctly added.
+
 -401 Unauthorized: ENsure you are sending the correct Basic Auth header with the request.
