@@ -33,8 +33,11 @@ This project is a Spring Boot Application for managing a library system. It prov
 
 ### 1.Clone the Repository
 '''bash
+
 git clone
+
 https://github.com/Nishthaa672/CoachBar-LMS.git
+
 cd CoachBar-LMS
 
 ### 2. Setup the Database
@@ -42,6 +45,7 @@ CREATE DATABASE library_mgmt;
 
 ### 3. Update the database credentials in src/main/resources/application.properties
 spring.datasource.username=your-username
+
 spring.datasource.password=your-password
 
 ### 4. Build the Application
